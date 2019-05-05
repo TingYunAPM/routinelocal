@@ -14,9 +14,9 @@ type byGidMap struct {
 }
 
 func get_gid() int64 {
-	buffer := make([]byte, 65536)
+	buffer := make([]byte, 32)
 	runtime.Stack(buffer, false)
-	if parts := Split(string(buffer[:32]), " "); parts[0] == "goroutine" && len(parts) > 1 {
+	if parts := Split(string(buffer), " "); parts[0] == "goroutine" && len(parts) > 1 {
 		if goid, err := strconv.ParseInt(parts[1], 10, 0); err == nil {
 			return goid
 		}
