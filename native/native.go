@@ -2,22 +2,23 @@ package routinelocal
 
 import (
 	"runtime"
+	"unsafe"
 )
 
 type Storage interface {
-	Get() uintptr
-	Set(p uintptr)
+	Get() unsafe.Pointer
+	Set(p unsafe.Pointer)
 }
 
 type byNative struct {
 	Storage
 }
 
-func (g *byNative) Get() uintptr {
+func (g *byNative) Get() unsafe.Pointer {
 	return runtime.GetRoutineLocal()
 }
-func (g *byNative) Set(p uintptr) {
-	runtime.SetRoutineLocal()
+func (g *byNative) Set(p unsafe.Pointer) {
+	runtime.SetRoutineLocal(p)
 }
 
 var _inst = byNative{}

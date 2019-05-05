@@ -1,6 +1,8 @@
 package routinelocal
-
+import (
+	"unsafe"
+)
 type Storage interface {
-	Get() uintptr
-	Set(p uintptr)
+	Get() unsafe.Pointer
+	Set(p unsafe.Pointer)
 }

@@ -13,7 +13,7 @@ var _interface routinelocal.Storage
 func test() {
 	x := _interface.Get()
 	p := unsafe.Pointer(x)
-	fmt.Println("Set:", p)
+	fmt.Println("Get:", p)
 	fmt.Println(*(*uint)(p))
 }
 func main() {
@@ -22,7 +22,7 @@ func main() {
 		var data uint = 1234
 		p := unsafe.Pointer(&data)
 		fmt.Println("Set:", p)
-		_interface.Set(uintptr(p))
+		_interface.Set(p)
 		test()
 	}()
 	time.Sleep(1000 * time.Microsecond)

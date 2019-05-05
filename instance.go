@@ -5,14 +5,14 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"unsafe"
 )
 
 type byGidMap struct {
 	Storage
-	_id_map map[int64]uintptr
+	_id_map map[int64]unsafe.Pointer
 	lock    *sync.RWMutex
 }
-
 func get_gid() int64 {
 	buffer := make([]byte, 32)
 	runtime.Stack(buffer, false)
@@ -24,30 +24,30 @@ func get_gid() int64 {
 	return -1
 }
 func (g *byGidMap) init() *byGidMap {
-	g._id_map = map[int64]uintptr{}
+	g._id_map = map[int64]unsafe.Pointer{}
 	g.lock = new(sync.RWMutex)
 	return g
 }
-func (g *byGidMap) Get() uintptr {
+func (g *byGidMap) Get() unsafe.Pointer {
 	gid := get_gid()
 	if gid == -1 {
-		return uintptr(0)
+		return nil
 	}
 	g.lock.RLock()
-	result := uintptr(0)
+	result := unsafe.Pointer(nil)
 	if r, found := g._id_map[gid]; found {
 		result = r
 	}
 	g.lock.RUnlock()
 	return result
 }
-func (g *byGidMap) Set(p uintptr) {
+func (g *byGidMap) Set(p unsafe.Pointer) {
 	gid := get_gid()
 	if gid == -1 {
 		return
 	}
 	g.lock.Lock()
-	if p != uintptr(0) {
+	if p != nil {
 		g._id_map[gid] = p
 	} else if _, exist := g._id_map[gid]; exist {
 		delete(g._id_map, gid)
